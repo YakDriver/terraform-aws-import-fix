@@ -1,0 +1,24 @@
+language: go
+
+go:
+  - 1.15
+
+stage: test
+install:
+  - go get golang.org/x/tools/cmd/goimports
+  - go get github.com/golangci/golangci-lint/cmd/golangci-lint
+  - git config --global user.email "${GH_EMAIL}"
+  - git config --global user.name "YakDriver"
+  - git clone https://github.com/YakDriver/terraform-provider-aws.git
+  - cd terraform-provider-aws
+  - export TF_AWS_PATH=./aws
+  - export LC_NUMERIC=en_US
+  - export DATE_ID=$(date +"%Y%m%d")
+  - export BRANCH="t-imports-${DATE_ID}"
+script:
+  - git checkout -b "${BRANCH}"
+  - ../goimport.sh
+  - git add .
+  - git commit -m "Clean up imports on ${DATE_ID}"
+  - git remote add commit-origin https://${GH_TOKEN}@github.com/YakDriver/terraform-provider-aws.git > /dev/null 2>&1
+  - git push --quiet --set-upstream commit-origin "${BRANCH}"
