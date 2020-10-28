@@ -1,0 +1,25 @@
+trigger:
+  - main
+    
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: GoTool@0
+  inputs:
+    version: '1.15'
+
+- task: Go@0
+  inputs:
+    command: 'get'
+    arguments: 'golang.org/x/tools/cmd/goimports'
+    workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Install goimports'
+
+- script: |
+    git config --global user.email "${GH_EMAIL}"
+    git config --global user.name "YakDriver"
+    git clone https://github.com/YakDriver/terraform-provider-aws.git
+  displayName: 'Setup Git'
+  env:
+    GH_EMAIL: $(gh_email)
