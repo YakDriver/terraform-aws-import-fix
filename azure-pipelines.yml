@@ -23,3 +23,10 @@ steps:
   displayName: 'Setup Git'
   env:
     GH_EMAIL: $(gh_email)
+
+- script: |
+    cd terraform-provider-aws
+    env
+  displayName: 'Run tool'
+  env:
+    
